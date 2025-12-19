@@ -1,26 +1,226 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #05060a;
+  --foreground: #e5e7eb;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #0ea5e9;
+  color: #f8fafc;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Engineering-inspired interaction animations */
+@keyframes slideDownAccent {
+  from {
+    transform: scaleY(0);
+    transform-origin: top;
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    transform-origin: top;
+    opacity: 1;
+  }
+}
+
+@keyframes slideUnderline {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInArrow {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Card accent bar on left edge */
+.card-accent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: #2563eb;
+  border-radius: 11px 0 0 11px;
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.card-accent:hover::before {
+  opacity: 1;
+  animation: slideDownAccent 200ms ease-out;
+}
+
+/* Border draw animation - draws borders in sequence top → right → bottom → left */
+@keyframes drawBorderTop {
+  0% {
+    border-top: 2px solid #2563eb;
+    border-right: 0px solid #2563eb;
+    border-bottom: 0px solid #2563eb;
+    border-left: 0px solid #2563eb;
+  }
+  25% {
+    border-top: 2px solid #2563eb;
+    border-right: 0px solid #2563eb;
+    border-bottom: 0px solid #2563eb;
+    border-left: 0px solid #2563eb;
+  }
+  50% {
+    border-top: 2px solid #2563eb;
+    border-right: 2px solid #2563eb;
+    border-bottom: 0px solid #2563eb;
+    border-left: 0px solid #2563eb;
+  }
+  75% {
+    border-top: 2px solid #2563eb;
+    border-right: 2px solid #2563eb;
+    border-bottom: 2px solid #2563eb;
+    border-left: 0px solid #2563eb;
+  }
+  100% {
+    border-top: 2px solid #2563eb;
+    border-right: 2px solid #2563eb;
+    border-bottom: 2px solid #2563eb;
+    border-left: 2px solid #2563eb;
+  }
+}
+
+/* Simpler approach: animate border using clip-path for sequential effect */
+@keyframes drawBorder {
+  0% {
+    clip-path: inset(0 100% 100% 0);
+  }
+  25% {
+    clip-path: inset(0 100% 100% 0);
+  }
+  50% {
+    clip-path: inset(0 0 100% 0);
+  }
+  75% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Border accent that draws in */
+.draw-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.animate-draw-in::after {
+  animation: drawBorder 350ms ease-out forwards;
+}
+
+/* Content fade-in and slide up after border draws */
+@keyframes contentFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-draw-in {
+  animation: contentFadeUp 300ms ease-out 350ms forwards;
+}
+
+.animate-draw-in > * {
+  animation: inherit;
+  animation-delay: 350ms;
+}
+
+/* Alternative: Direct border animation with staggered sides */
+@keyframes borderDrawSequence {
+  0% {
+    border-top-color: #2563eb;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-top-width: 1px;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+  }
+  20% {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 0;
+    border-left-width: 0;
+  }
+  40% {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 0;
+  }
+  60% {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+  }
+  100% {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: #dbeafe;
+    border-right-color: #dbeafe;
+    border-bottom-color: #dbeafe;
+    border-left-color: #dbeafe;
+  }
+}
+
+.card-draw-in {
+  border: 1px solid #dbeafe;
+  animation: borderDrawSequence 400ms ease-out 0ms forwards;
 }
